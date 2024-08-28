@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'  # Use the version that your script supports
+          python-version: '3.12.5'
           cache: 'pip'
           cache-dependency-path: |
             **/requirements*.txt
@@ -31,6 +31,18 @@ jobs:
       - name: Set up Nuitka environment
         run: |
           pip install nuitka
+
+      - name: Install ccache (Ubuntu only)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install -y ccache
+      
+      - name: Install ccache (macOS only)
+        if: matrix.os == 'macos-13'
+        run: |
+          brew update
+          brew install ccache
       
       - name: Modify TkinterPlugin.py
         run: |
@@ -42,38 +54,32 @@ jobs:
           def find_file(filename):
               # Define the starting directory based on the OS
               if sys.platform == 'darwin':
-                  start_dir = '/'
+              #    start_dir = '/'
+                  absolute_dir = "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py"
               elif sys.platform == 'linux':
-                  start_dir = '/'
+              #    start_dir = '/'
+                  absolute_dir = "/opt/hostedtoolcache/Python/3.12.5/x64/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py"
               elif sys.platform == 'win32':
-                  start_dir = 'C:/'
-              else:
-                  raise EnvironmentError('Unsupported operating system')
+              #    start_dir = 'C:/'
+                  absolute_dir = "C:/hostedtoolcache/windows/Python/3.12.5/x64/Lib/site-packages/nuitka/plugins/standard/TkinterPlugin.py"
+              
+              #else:
+              #    raise EnvironmentError('Unsupported operating system')
           
               # Walk through the file system starting from start_dir
-              for root, dirs, files in os.walk(start_dir):
-                  if filename in files:
-                      return os.path.join(root, filename)
+              #for root, dirs, files in os.walk(start_dir):
+              #    if filename in files:
+              #        return os.path.join(root, filename)
           
-              raise FileNotFoundError(f'{filename} not found')
+              #raise FileNotFoundError(f'{filename} not found')
+              
+              return absolute_dir
           
           # Define the file name
           file_name = 'TkinterPlugin.py'
           
           # Find the file path
           file_path = find_file(file_name)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
-          print(file_path)
           
           # Replacements dictionary
           replacements = {
