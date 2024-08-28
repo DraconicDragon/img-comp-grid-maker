@@ -29,9 +29,9 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Set up Nuitka environment
-        uses: Nuitka/Nuitka-Action@main
-        with:
-          nuitka-version: main
+        run: |
+          pip install nuitka
+          sudo apt install ccache
       
       - name: Modify TkinterPlugin.py
         run: |
