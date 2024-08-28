@@ -35,16 +35,31 @@ jobs:
       - name: Modify TkinterPlugin.py
         run: |
           python -c "
+          import os
           import fileinput
           import sys
           
-          file_path = '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
+          # Determine the file path based on the OS
+          if sys.platform == 'darwin':
+              # macOS
+              file_path = '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
+          elif sys.platform == 'linux':
+              # Linux
+              file_path = '/usr/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
+          elif sys.platform == 'win32':
+              # Windows
+              file_path = 'C:\\Python\\Python312\\Lib\\site-packages\\nuitka\\plugins\\standard\\TkinterPlugin.py'
+          else:
+              raise EnvironmentError('Unsupported operating system')
+          
+          # Replacements dictionary
           replacements = {
               'osx64': 'osx-x64',
               'linux64': 'linux-x64',
               'win64': 'win-x64'
           }
           
+          # Perform replacements in the file
           with fileinput.FileInput(file_path, inplace=True, backup='.bak') as file:
               for line in file:
                   for src, target in replacements.items():
