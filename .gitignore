@@ -6,11 +6,23 @@ __pycache__/
 # C extensions
 *.so
 
+# nuitka dist and build folder as well as binaries
+*.dist/
+*.build/
+*.exe
+*.bin
+
+# image cuz too lazy to remove
+*.jpg
+*.png
+!assets/*jpg
+!assets/*png
+
 # Distribution / packaging
 .Python
 build/
-develop-eggs/
 dist/
+develop-eggs/
 downloads/
 eggs/
 .eggs/

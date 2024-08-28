@@ -117,8 +117,9 @@ class ImageComparisonTool:
             images.append(img)
 
             total_width += img.width
-            max_height = max(max_height, img.height)
-
+            max_height = max(max_height, img.height)   
+            
+        # TODO: make better math for fitting in font inside white space
         # the white space for captions above the images
         comparison_image = Image.new("RGB", (total_width, max_height + 128), (255, 255, 255))
         draw = ImageDraw.Draw(comparison_image)
