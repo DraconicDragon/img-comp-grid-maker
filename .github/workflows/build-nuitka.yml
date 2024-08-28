@@ -46,7 +46,7 @@ jobs:
               elif sys.platform == 'linux':
                   start_dir = '/'
               elif sys.platform == 'win32':
-                  start_dir = 'C:\\'
+                  start_dir = 'C:/'
               else:
                   raise EnvironmentError('Unsupported operating system')
           
