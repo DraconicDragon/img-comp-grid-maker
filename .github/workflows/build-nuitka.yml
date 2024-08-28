@@ -82,7 +82,7 @@ jobs:
           
       - name: Build using Nuitka
         run: |
-          nuitka --onefile --enable-plugin=tk-inter --macos-create-app-bundle --assume-yes-for-downloads img_comp_grid_maker.py
+          nuitka --onefile --enable-plugin=tk-inter --windows-console-mode=disable --macos-create-app-bundle --assume-yes-for-downloads img_comp_grid_maker.py
 
       
       - name: Upload Artifacts
