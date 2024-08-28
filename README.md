@@ -1,7 +1,7 @@
 # Image Comparison Grid Maker Tool Thing.
 
-Works on Linux AND Windows! (woohoo cross platform <small><small><sub>yay!</sub></small></small>)
-<small>Disclaimer or whatever this is: this program will only add the images next to each other in a row. For a full fledged grid see the [infinity grid](https://sd.mcmonkey.org/megagrid/) or others</small>
+Works on Linux AND Windows! (woohoo cross platform <sub>yay!</sub>)
+<sub>Disclaimer or whatever this is: this program will only add the images next to each other in a row. For a full fledged grid see the [infinity grid](https://sd.mcmonkey.org/megagrid/) or others</sub>
 
 ### Simple Application
 
@@ -19,14 +19,14 @@ Prebuilt binaries for Windows and Linux can be found in the [releases section](h
 
 * `pillow tkinterdnd2-universal` <sub><sub>tkinterdnd2 works too but not on linux</sub></sub>
 * `nuitka` if you want to build the script to an executable
-* <small>`sudo apt install python3-tk` if on linux because tkinter doesn't come bundled (shocker, I know.)</small>
-* <small>some TrueType font if you are on linux and DeJavuSans font isn't available. otherwise the pillow default will be used which is just a bitmapped font with no size regulations</small>
+* <sub>`sudo apt install python3-tk` if on linux because tkinter doesn't come bundled (shocker, I know.)</sub>
+* <sub>some TrueType font if you are on linux and DeJavuSans font isn't available. otherwise the pillow default will be used which is just a bitmapped font with no size regulations</sub>
 
 
-<u>**App preview:**</u> <small><small><small>(Linux preview images available in assets folder)</small></small></small>
+**App preview:** <sub>(Linux preview images available in assets folder)</sub>
 ![app_preview](/assets/app_preview.png)
 
-<u>**Result:**</u>
+**Result:**
 ![result_preview](/assets/result_preview.jpg)
 
-<small><small><small>the font currently doesnt get math'd into the white space correctly, especially when its a very long caption :\/</small></small></small>
+<sub><sub>the font currently doesnt get math'd into the white space correctly, especially when its a very long caption :\/</sub></sub>
