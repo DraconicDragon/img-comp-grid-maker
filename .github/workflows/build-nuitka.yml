@@ -22,6 +22,8 @@ jobs:
         with:
           python-version: '3.x'  # Use the version that your script supports
           cache: 'pip'
+          cache-dependency-path: |
+            **/requirements*.txt
           
       - name: Install Dependencies
         run: pip install -r requirements.txt
