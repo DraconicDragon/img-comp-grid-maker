@@ -32,12 +32,14 @@ jobs:
         run: |
           pip install nuitka
 
+# technically not needed
       - name: Install ccache (Ubuntu only)
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
           sudo apt install -y ccache
-      
+
+# technically not needed
       - name: Install ccache (macOS only)
         if: matrix.os == 'macos-13'
         run: |
@@ -55,13 +57,13 @@ jobs:
               # Define the starting directory based on the OS
               if sys.platform == 'darwin':
               #    start_dir = '/'
-                  absolute_dir = "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py"
+                  absolute_dir = '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
               elif sys.platform == 'linux':
               #    start_dir = '/'
-                  absolute_dir = "/opt/hostedtoolcache/Python/3.12.5/x64/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py"
+                  absolute_dir = '/opt/hostedtoolcache/Python/3.12.5/x64/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
               elif sys.platform == 'win32':
               #    start_dir = 'C:/'
-                  absolute_dir = "C:/hostedtoolcache/windows/Python/3.12.5/x64/Lib/site-packages/nuitka/plugins/standard/TkinterPlugin.py"
+                  absolute_dir = 'C:/hostedtoolcache/windows/Python/3.12.5/x64/Lib/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
               
               #else:
               #    raise EnvironmentError('Unsupported operating system')
@@ -98,7 +100,7 @@ jobs:
           
       - name: Build using Nuitka
         run: |
-          nuitka --onefile --enable-plugin=tk-inter img_comp_grid_maker.py
+          nuitka --onefile --enable-plugin=tk-inter --assume-yes-for-downloads img_comp_grid_maker.py
 
       
       - name: Upload Artifacts
