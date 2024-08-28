@@ -31,7 +31,6 @@ jobs:
       - name: Set up Nuitka environment
         run: |
           pip install nuitka
-          sudo apt install ccache
       
       - name: Modify TkinterPlugin.py
         run: |
