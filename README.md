@@ -12,6 +12,7 @@ Works on Linux AND Windows! (woohoo cross platform <sub>yay!</sub>)
 ### Prebuilt Binaries
 
 Prebuilt binaries for Windows and Linux can be found in the [releases section](https://github.com/DraconicDragon/img-comp-grid-maker/releases/latest)
+There is also binaries built on every commit to the repo at the [actions tab](https://github.com/DraconicDragon/img-comp-grid-maker/actions) which includes MacOS 13 non ARM which i can't test (i also dont know why the linux build is 10mb larger than mine)
 
 ### Script
 
