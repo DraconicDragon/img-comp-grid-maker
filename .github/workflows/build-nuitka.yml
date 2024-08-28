@@ -28,19 +28,41 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Build using Nuitka
+      - name: Set up Nuitka environment
         uses: Nuitka/Nuitka-Action@main
         with:
           nuitka-version: main
-          script-name: img_comp_grid_maker.py
-          onefile: true
-          enable-plugins: tk-inter
+      
+      - name: Modify TkinterPlugin.py
+        run: |
+          python -c "
+          import fileinput
+          import sys
+          
+          file_path = '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
+          replacements = {
+              'osx64': 'osx-x64',
+              'linux64': 'linux-x64',
+              'win64': 'win-x64'
+          }
+          
+          with fileinput.FileInput(file_path, inplace=True, backup='.bak') as file:
+              for line in file:
+                  for src, target in replacements.items():
+                      line = line.replace(src, target)
+                  sys.stdout.write(line)
+          "
+      
+      - name: Build using Nuitka
+        run: |
+          nuitka --onefile --enable-plugin=tk-inter img_comp_grid_maker.py
+
       
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }} Build
           path: |
-            build/*.exe
-            build/*.bin
-            build/*.app/**/*
+            *.exe
+            *.bin
+            *.app/**/*
