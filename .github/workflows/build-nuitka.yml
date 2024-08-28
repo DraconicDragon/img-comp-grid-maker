@@ -9,14 +9,14 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-13]
+        os: [ubuntu-24.04, windows-latest, macos-13]
     runs-on: ${{ matrix.os }}
 
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+          
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -25,26 +25,8 @@ jobs:
           cache-dependency-path: |
             **/requirements*.txt
           
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
-
-      - name: Set up Nuitka environment
-        run: |
-          pip install nuitka
-
-# technically not needed
-      - name: Install ccache (Ubuntu only)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt update
-          sudo apt install -y ccache
-
-# technically not needed
-      - name: Install ccache (macOS only)
-        if: matrix.os == 'macos-13'
-        run: |
-          brew update
-          brew install ccache
+      - name: Install pip Dependencies
+        run: pip install -r requirements.txt nuitka
       
       - name: Modify TkinterPlugin.py
         run: |
@@ -100,7 +82,7 @@ jobs:
           
       - name: Build using Nuitka
         run: |
-          nuitka --onefile --enable-plugin=tk-inter --assume-yes-for-downloads img_comp_grid_maker.py
+          nuitka --onefile --enable-plugin=tk-inter --macos-create-app-bundle --assume-yes-for-downloads img_comp_grid_maker.py
 
       
       - name: Upload Artifacts
