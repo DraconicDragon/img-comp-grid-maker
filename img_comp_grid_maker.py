@@ -1,11 +1,15 @@
 import os
+import sys
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import messagebox
 
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
-# pip install tkinterdnd2-universal because tkinterdnd2 is broken on linux
+# this is probably good as a stable diffusion extension ngl. it probably even exists already lol
+
+# NOTE: pip install tkinterdnd2-universal because tkinterdnd2 is broken on linux
+# to build with nuitka change TkinterPlugin.py to search for win-x64 and linux-x64 instead of win64 and linux64 at around L143
 
 
 class ImageComparisonTool:
@@ -150,11 +154,12 @@ class ImageComparisonTool:
             draw.text((text_x, -16), caption, font=font, fill="black")  # hardcoded 16 cuz too stupid to do font math
             x_offset += img.width
 
-        # saves image to same path as script location
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        save_path = os.path.join(script_dir, "comparison_image.jpg")
+        # saves image to same path as script/exe location
+        base_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
 
-        comparison_image.save(save_path)  # change save path if no want script path save location
+        # Save the image to the base directory
+        save_path = os.path.join(base_dir, "comparison_image.jpg")
+        comparison_image.save(save_path)
         messagebox.showinfo("Success", f"Comparison image generated as '{save_path}'.")
 
 
