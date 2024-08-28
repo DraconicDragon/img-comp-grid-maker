@@ -39,18 +39,29 @@ jobs:
           import fileinput
           import sys
           
-          # Determine the file path based on the OS
-          if sys.platform == 'darwin':
-              # macOS
-              file_path = '/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
-          elif sys.platform == 'linux':
-              # Linux
-              file_path = '/usr/lib/python3.12/site-packages/nuitka/plugins/standard/TkinterPlugin.py'
-          elif sys.platform == 'win32':
-              # Windows
-              file_path = 'C:\\Python\\Python312\\Lib\\site-packages\\nuitka\\plugins\\standard\\TkinterPlugin.py'
-          else:
-              raise EnvironmentError('Unsupported operating system')
+          def find_file(filename):
+              # Define the starting directory based on the OS
+              if sys.platform == 'darwin':
+                  start_dir = '/'
+              elif sys.platform == 'linux':
+                  start_dir = '/'
+              elif sys.platform == 'win32':
+                  start_dir = 'C:\\'
+              else:
+                  raise EnvironmentError('Unsupported operating system')
+          
+              # Walk through the file system starting from start_dir
+              for root, dirs, files in os.walk(start_dir):
+                  if filename in files:
+                      return os.path.join(root, filename)
+          
+              raise FileNotFoundError(f'{filename} not found')
+          
+          # Define the file name
+          file_name = 'TkinterPlugin.py'
+          
+          # Find the file path
+          file_path = find_file(file_name)
           
           # Replacements dictionary
           replacements = {
@@ -66,7 +77,7 @@ jobs:
                       line = line.replace(src, target)
                   sys.stdout.write(line)
           "
-      
+          
       - name: Build using Nuitka
         run: |
           nuitka --onefile --enable-plugin=tk-inter img_comp_grid_maker.py
