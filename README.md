@@ -1,7 +1,7 @@
 # Image Comparison Grid Maker Tool Thing.
 
 Works on Linux AND Windows! (woohoo cross platform <sub>yay!</sub>)
-<sub>Disclaimer or whatever this is: this program will only add the images next to each other in a row. For a full fledged grid see the [infinity grid](https://sd.mcmonkey.org/megagrid/) or others</sub>
+<sub>Disclaimer or whatever this is: this program will only add the images next to each other in a row. It also isn't actually needed if you have Forge, SwarmUI, a1111 sd webui because they have it builtin (xyz plot). For a fully full fullings fledged grid see the [infinity grid](https://sd.mcmonkey.org/megagrid/) or others</sub>
 
 ### Simple Application
 
