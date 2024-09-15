@@ -128,36 +128,75 @@ class ImageComparisonTool:
         for img, caption in zip(images, captions):
             comparison_image.paste(img, (x_offset, 128))
 
-            # Adjust font size to fit the caption within the image width
-            font_size = 120
+            # Initial font size
+            original_font_size = 120
+            font_size = original_font_size
 
             if os.name == "nt":
                 font_path = "arial.ttf"
             else:
                 font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-                # i hope you have this font Linux user otherwise the garbage fallback is being used, please update this path in that case
+                # Update this path if necessary
             try:
                 font = ImageFont.truetype(font_path, font_size)
             except IOError:
-                # Fallback; is stupid because its just bitmapped and isnt an actual font so no font size >:(
                 font = ImageFont.load_default()
+
             bbox = draw.textbbox((0, 0), caption, font=font)
             text_width = bbox[2] - bbox[0]
 
-            while text_width > img.width and font_size > 10:
+            # Calculate 45% threshold for font size
+            font_size_threshold = int(original_font_size * 0.45)
+
+            while text_width > img.width and font_size > font_size_threshold:
                 font_size -= 1
                 font = ImageFont.truetype(font_path, font_size)
                 bbox = draw.textbbox((0, 0), caption, font=font)
                 text_width = bbox[2] - bbox[0]
 
-            # put caption in right position for no overlap and center vertically
-            text_x = x_offset + (img.width - text_width) // 2
-            # Adjust for characters that extend below the baseline (descenders)
-            font_ascent, font_descent = font.getmetrics()
-            text_height = bbox[3] - bbox[1] + font_descent  # include descent for characters like "p", "q", "y"
-            # Calculate the y position to center the text in the white space, with a hardcoded -2 adjustment
-            text_y = (128 - text_height) // 2 - 8
-            draw.text((text_x, text_y), caption, font=font, fill="black")  # dynamically position text in center
+            # If the font size is below the 45% threshold, we break the text into two lines
+            if font_size <= font_size_threshold:
+                words = caption.split()
+                first_line = ""
+                second_line = ""
+                for word in words:
+                    # Temporarily append the word to see if it fits in the first line
+                    if draw.textbbox((0, 0), first_line + word + " ", font=font)[2] - bbox[0] <= img.width:
+                        first_line += word + " "
+                    else:
+                        second_line += word + " "
+
+                # Adjust positions for two lines
+                first_bbox = draw.textbbox((0, 0), first_line, font=font)
+                second_bbox = draw.textbbox((0, 0), second_line, font=font)
+
+                first_text_width = first_bbox[2] - first_bbox[0]
+                second_text_width = second_bbox[2] - second_bbox[0]
+
+                # Center each line horizontally
+                first_text_x = x_offset + (img.width - first_text_width) // 2
+                second_text_x = x_offset + (img.width - second_text_width) // 2
+
+                # Vertically adjust for the height of two lines
+                font_ascent, font_descent = font.getmetrics()
+                first_text_height = first_bbox[3] - first_bbox[1] + font_descent
+                second_text_height = second_bbox[3] - second_bbox[1] + font_descent
+                total_height = first_text_height + second_text_height
+
+                first_text_y = (128 - total_height) // 2 - 4
+                second_text_y = first_text_y + first_text_height
+
+                # Draw the two lines of text
+                draw.text((first_text_x, first_text_y), first_line.strip(), font=font, fill="black")
+                draw.text((second_text_x, second_text_y), second_line.strip(), font=font, fill="black")
+            else:
+                # Center the single line of text vertically and horizontally
+                text_x = x_offset + (img.width - text_width) // 2
+                font_ascent, font_descent = font.getmetrics()
+                text_height = bbox[3] - bbox[1] + font_descent
+                text_y = (128 - text_height) // 2 - 8
+                draw.text((text_x, text_y), caption, font=font, fill="black")
+
             x_offset += img.width
 
         # saves image to same path as script/exe location
