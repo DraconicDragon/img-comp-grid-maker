@@ -117,8 +117,8 @@ class ImageComparisonTool:
             images.append(img)
 
             total_width += img.width
-            max_height = max(max_height, img.height)   
-            
+            max_height = max(max_height, img.height)
+
         # TODO: make better math for fitting in font inside white space
         # the white space for captions above the images
         comparison_image = Image.new("RGB", (total_width, max_height + 128), (255, 255, 255))
@@ -150,9 +150,14 @@ class ImageComparisonTool:
                 bbox = draw.textbbox((0, 0), caption, font=font)
                 text_width = bbox[2] - bbox[0]
 
-            # put caption in right position for no overlap
+            # put caption in right position for no overlap and center vertically
             text_x = x_offset + (img.width - text_width) // 2
-            draw.text((text_x, -16), caption, font=font, fill="black")  # hardcoded 16 cuz too stupid to do font math
+            # Adjust for characters that extend below the baseline (descenders)
+            font_ascent, font_descent = font.getmetrics()
+            text_height = bbox[3] - bbox[1] + font_descent  # include descent for characters like "p", "q", "y"
+            # Calculate the y position to center the text in the white space, with a hardcoded -2 adjustment
+            text_y = (128 - text_height) // 2 - 8
+            draw.text((text_x, text_y), caption, font=font, fill="black")  # dynamically position text in center
             x_offset += img.width
 
         # saves image to same path as script/exe location
