@@ -29,5 +29,4 @@ There is also binaries built on every commit to the repo at the [actions tab](ht
 
 **Result:**
 ![result_preview](/assets/result_preview.jpg)
-
-<sub><sub>the font currently doesnt get math'd into the white space correctly, especially when its a very long caption :\/</sub></sub>
+<sub>the font gets math'd into the white space correctly now and on long captions it even splits into a new line! I'll probably forget to update the images tho</sub>
