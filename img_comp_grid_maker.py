@@ -6,8 +6,6 @@ from tkinter import messagebox
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
-# this is probably good as a stable diffusion extension ngl. it probably even exists already lol
-
 # NOTE: pip install tkinterdnd2-universal because tkinterdnd2 is broken on linux
 # to build with nuitka change TkinterPlugin.py to search for win-x64 and linux-x64 instead of win64 and linux64 at around L143
 
