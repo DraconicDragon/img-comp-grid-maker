@@ -157,38 +157,63 @@ class ImageComparisonTool:
             # If the font size is below the 45% threshold, we break the text into two lines
             if font_size <= font_size_threshold:
                 words = caption.split()
-                first_line = ""
-                second_line = ""
+                lines = []
+                current_line = ""
+
                 for word in words:
-                    # Temporarily append the word to see if it fits in the first line
-                    if draw.textbbox((0, 0), first_line + word + " ", font=font)[2] - bbox[0] <= img.width:
-                        first_line += word + " "
+                    # Temporarily append the word to the current line to check if it fits
+                    test_line = current_line + word + " "
+                    test_bbox = draw.textbbox((0, 0), test_line.strip(), font=font)
+                    test_text_width = test_bbox[2] - test_bbox[0]
+
+                    # If it fits, continue adding to the current line
+                    if test_text_width <= img.width:
+                        current_line = test_line
                     else:
-                        second_line += word + " "
+                        # If it doesn't fit, add the current line to the list and start a new one with the current word
+                        if current_line:  # Avoid adding an empty line
+                            lines.append(current_line.strip())
+                        current_line = word + " "
 
-                # Adjust positions for two lines
-                first_bbox = draw.textbbox((0, 0), first_line, font=font)
-                second_bbox = draw.textbbox((0, 0), second_line, font=font)
+                # Add the last line to the list if it's not empty
+                if current_line:
+                    lines.append(current_line.strip())
 
-                first_text_width = first_bbox[2] - first_bbox[0]
-                second_text_width = second_bbox[2] - second_bbox[0]
+                # Calculate the total height required for the lines
+                total_height = sum(
+                    draw.textbbox((0, 0), line, font=font)[3]
+                    - draw.textbbox((0, 0), line, font=font)[1]
+                    + font.getmetrics()[1]
+                    for line in lines
+                )
 
-                # Center each line horizontally
-                first_text_x = x_offset + (img.width - first_text_width) // 2
-                second_text_x = x_offset + (img.width - second_text_width) // 2
+                # Adjust the font size until everything fits within the height of 128
+                while total_height > 118 and font_size > 1:
+                    font_size -= 1
+                    font = ImageFont.truetype(font_path, font_size)
 
-                # Vertically adjust for the height of two lines
-                font_ascent, font_descent = font.getmetrics()
-                first_text_height = first_bbox[3] - first_bbox[1] + font_descent
-                second_text_height = second_bbox[3] - second_bbox[1] + font_descent
-                total_height = first_text_height + second_text_height
+                    # Recalculate total height with the new font size
+                    total_height = sum(
+                        draw.textbbox((0, 0), line, font=font)[3]
+                        - draw.textbbox((0, 0), line, font=font)[1]
+                        + font.getmetrics()[1]
+                        for line in lines
+                    )
 
-                first_text_y = (128 - total_height) // 2 - 4
-                second_text_y = first_text_y + first_text_height
+                # Vertically center the lines within the available space, ensuring it doesn't go below 0
+                current_y = max((128 - total_height) // 2 - 12, 0)
+                # Draw each line of text
+                for line in lines:
+                    bbox = draw.textbbox((0, 0), line, font=font)
+                    text_width = bbox[2] - bbox[0]
+                    text_x = x_offset + (img.width - text_width) // 2  # Horizontally center the text
+                    draw.text((text_x, current_y), line, font=font, fill="black")
+                    current_y += bbox[3] - bbox[1] + font.getmetrics()[1]  # Move down to draw the next line
 
-                # Draw the two lines of text
-                draw.text((first_text_x, first_text_y), first_line.strip(), font=font, fill="black")
-                draw.text((second_text_x, second_text_y), second_line.strip(), font=font, fill="black")
+                    # Check if current_y exceeds the image height
+                    if current_y > img.height:
+                        break  # Stop drawing if we exceed the image bounds
+
             else:
                 # Center the single line of text vertically and horizontally
                 text_x = x_offset + (img.width - text_width) // 2
